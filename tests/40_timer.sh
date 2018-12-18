@@ -5,16 +5,10 @@ export test_description="pass-tomb with timer."
 cd tests
 source ./commons
 
-_tomb_unmounted() {
-    local name="$1"
-    test -z "$(mount -l | grep "/dev/mapper/tomb.$name")"
-    return $?
-}
-
 # Ensure the tomb is closed before to continue
 _waitfor() {
     local name="$1"
-    while ! _tomb_unmounted "$name"; do
+    while systemctl is-active "pass-close@$name.timer"; do
         sleep 5
     done
 }
